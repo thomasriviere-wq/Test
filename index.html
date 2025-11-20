@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Image compteur</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+  <h1>Image compteur</h1>
+  <img id="cat" alt="cat" style="max-width:400px;display:block;margin-bottom:10px;">
+  <button id="load">Charger l'image</button>
+
+  <script>
+    document.getElementById('load').addEventListener('click', loadImage);
+
+    async function loadImage() {
+      try {
+        // On récupère l'image via fetch pour pouvoir lire l'en-tête X-View-Count
+        const resp = await fetch('/image');
+        const count = resp.headers.get('x-view-count') || 'inconnu';
+        console.log('Nombre de vues :', count);
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        document.getElementById('cat').src = url;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
